@@ -98,7 +98,7 @@ const FactureForm = ({slug, facture}: {slug: string, facture: IFacture}) => {
             {!items && <p className="flex items-center justify-center header capitalize">no items</p>}
             {items && <div className="flex flex-col flex-1 space-y-4">
                 {items.map((item: any, index: number) => (
-                    <div className="flex-1 flex items-center justify-between mt-3 shadow-sm rounded-md bg-dark-200 border-b border-dark-500">
+                    <div key={index} className="flex-1 flex items-center justify-between mt-3 shadow-sm rounded-md bg-dark-200 border-b border-dark-500">
                         <span className="text-16-regular border-r border-dark-500 px-2">{index + 1}</span>
                         <span className="text-16-regular flex-1 pl-2">{item.product}</span>
                         <span className="text-16-regular flex-1">{formatter.format(item.price)}</span>
