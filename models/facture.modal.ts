@@ -10,6 +10,26 @@ const ItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  couleurExterieur: {
+    type: String,
+    required: true,
+  },
+  couleurInterieur: {
+    type: String,
+    required: true,
+  },
+  typeModeles: {
+    type: String,
+    required: true,
+  },
+  typeAccessoirs: {
+    type: String,
+    required: true,
+  },
+  hauteurDePleinte: {
+    type: String,
+    required: true,
+  },
 });
 
 const VercementSchema = new mongoose.Schema({
@@ -25,7 +45,7 @@ const VercementSchema = new mongoose.Schema({
 
 const FactureSchema = new mongoose.Schema({
   items: {
-    type: [ItemSchema],
+    type: [ItemSchema], // Updated items schema with new fields
     required: true,
   },
   name: {
@@ -47,6 +67,11 @@ const FactureSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  factureNumber: {
+    type: Number,
+    unique: true,
+    default: 1,
   },
   isCompleted: {
     type: Boolean,
@@ -82,6 +107,18 @@ FactureSchema.pre<IFacture>('save', function (next) {
   next();
 });
 
+FactureSchema.pre('save', async function (next) {
+  const latestFacture = await mongoose.models.Facture.findOne().sort({ factureNumber: -1 });
+  if (latestFacture) {
+      this.factureNumber = latestFacture.factureNumber + 1;
+  } else {
+      this.factureNumber = 1;
+  }
+  next();
+});
+
 const Facture = mongoose.models.Facture || mongoose.model('Facture', FactureSchema);
 
 export default Facture;
+
+

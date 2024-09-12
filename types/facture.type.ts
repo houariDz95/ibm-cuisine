@@ -5,11 +5,17 @@ export interface IVercement {
   date: string; // or Date if you prefer a Date object
 }
 
+export interface IOtherDetails {
+  title: string;
+  value: string; // or Date if you prefer a Date object
+}
+
 export interface IFacture extends Document {
   _id: string;
   name: string;
   address: string;
   vercement: IVercement[]; // Array of vercement objects
+  otherDetails: IOtherDetails[];
   totalVercement: number; // Virtual field
   total: number; // Virtual field
   createdAt: string;

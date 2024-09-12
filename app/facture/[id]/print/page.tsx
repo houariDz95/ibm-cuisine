@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { getFacture } from '@/lib/actions'
 import { formatter } from '@/lib/utils';
 import Link from 'next/link';
+import { number } from 'zod';
 
 
 const Print = async ({params: {id}}: SearchParamProps) => {
@@ -10,87 +11,142 @@ const Print = async ({params: {id}}: SearchParamProps) => {
     const facture = await getFacture(id) || []
     const rest = facture.total - facture.totalVercement;
      return (
-    <div className="w-full min-h-screen flex items-center justify-center">
-      <div className="flex flex-col items-cenert justify-center">
-        <h2 className="header">Facture #{facture._id}</h2>
-        <p className="text-dark-700 text-16-regular mt-2">Date: {new Date(facture.createdAt).toLocaleDateString()}</p>
-        <div className="space-y-2 mt-4 bg-dark-400 p-2 rounded-md ">
-        <div className="flex gap-2">
-              <span className=" text-14-medium">client</span>:
-              <span className=" text-14-medium capitalize">{facture.name}</span>
+      <div className="w-full min-h-screen flex items-center justify-center bg-dark-900 text-gray-200">
+        <div className="flex flex-col items-center justify-center w-[90%] max-w-4xl p-6 bg-dark-800 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold mb-4">Facture #{facture.factureNumber}</h2>
+          <p className="text-gray-400 text-sm mb-4">Date: {new Date(facture.createdAt).toLocaleDateString()}</p>
+          
+          {/* Client Info */}
+          <div className="space-y-2 w-full bg-dark-400 p-4 rounded-md">
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-400">Client</span>
+              <span className="text-sm font-medium capitalize">{facture.name}</span>
             </div>
-            <div className="flex gap-2">
-              <span className=" text-14-medium">Phone Number</span>:
-              <span className=" text-14-medium">0{facture.phone}</span>
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-400">Phone Number</span>
+              <span className="text-sm font-medium">0{facture.phone}</span>
             </div>
-            <div className="flex gap-2">
-              <span className=" text-14-medium">Address</span>:
-              <span className=" text-14-medium capitalize">{facture.address}</span>
-            </div>
-        </div> 
-        <div className="mt-4">
-          {facture?.items.map((item: any, index: number) => (
-            <div key={index} className="border-b border-dark-700 py-2 flex gap-4">
-              <span className="text-16-regular">{item.product}</span>:
-              <span className="text-16-regular">{formatter.format(item.price)}</span>
-            </div>
-          ))}
-          <div className="my-4 bg-dark-500 rounded-md shadow-sm space-y-4 p-2">
-            <div className="flex gap-2">
-              <span className=" text-14-medium">Vercement</span>:
-              <span className=" text-14-medium">{formatter.format(facture.totalVercement)}</span>
-            </div>
-            <div className="flex gap-2">
-              <span className=" text-14-medium">Total</span>:
-              <span className=" text-14-medium">{formatter.format(facture.total)}</span>
-            </div>
-            <div className="flex gap-2">
-              <span className=" text-14-medium">Rest</span>:
-              <span className=" text-14-medium">{formatter.format(rest)}</span>
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-400">Address</span>
+              <span className="text-sm font-medium capitalize">{facture.address}</span>
             </div>
           </div>
-          <div className="flex justify-end">
-            <div>
-              <h4 className="text-16-regular">Vercement Historique</h4>
-              <div className="flex flex-col space-y-2 my-2 bg-dark-700 w-full rounded-sm shadow-sm p-4">
-                {facture.vercement.map((v: any, i: number) => {
-                  const formattedDate = new Date(v.date).toLocaleDateString('fr-FR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                });
-                return(
-                  <div className="flex items-center gap-2" key={i}>
-                    <span key={i} className='text-14-regular text-dark-500 flex justify-end'>{formatter.format(v.amount)}</span> |
-                    <span key={i} className='text-14-regular text-dark-500 flex justify-end'>{formattedDate}</span>
+
+          {/* Items List */}
+          <div className="w-full mt-6 space-y-3">
+              {facture?.items.map((item: any, index: number) => (
+                <div key={index} className="bg-dark-400 p-4 rounded-md space-y-2">
+                  {/* Main product and price */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-base font-medium">{item.product}</span>
+                    <span className="text-base font-medium">{formatter.format(item.price)}</span>
                   </div>
-                  )
-                })}
-              </div>
+                  
+                  {/* Additional item details */}
+                  <div className="space-y-1 text-sm text-gray-400">
+                    {item.couleurExterieur && (
+                      <div className="flex justify-between">
+                        <span>Couleur Exterieur:</span>
+                        <span className="capitalize">{item.couleurExterieur}</span>
+                      </div>
+                    )}
+                    {item.couleurInterieur && (
+                      <div className="flex justify-between">
+                        <span>Couleur Interieur:</span>
+                        <span className="capitalize">{item.couleurInterieur}</span>
+                      </div>
+                    )}
+                    {item.typeModeles && (
+                      <div className="flex justify-between">
+                        <span>Type Modèles:</span>
+                        <span className="capitalize">{item.typeModeles}</span>
+                      </div>
+                    )}
+                    {item.typeAccessoires && (
+                      <div className="flex justify-between">
+                        <span>Type Accessoires:</span>
+                        <span className="capitalize">{item.typeAccessoires}</span>
+                      </div>
+                    )}
+                    {item.hauteurDePleinte && (
+                      <div className="flex justify-between">
+                        <span>Hauteur de Pleinte:</span>
+                        <span>{item.hauteurDePleinte}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+
+          {/* Total, Vercement, Rest */}
+          <div className="my-6 bg-dark-400 p-4 rounded-md w-full space-y-3">
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-400">Vercement</span>
+              <span className="text-sm font-medium">{formatter.format(facture.totalVercement)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-400">Total</span>
+              <span className="text-sm font-medium">{formatter.format(facture.total)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-400">Rest</span>
+              <span className="text-sm font-medium">{formatter.format(rest)}</span>
             </div>
           </div>
+
+          {/* Vercement History */}
+          <div className="flex flex-col w-full">
+            <h4 className="text-lg font-bold mb-3">Vercement Historique:</h4>
+            <div className="flex flex-col space-y-2 bg-dark-400 p-4 rounded-md">
+              {facture.vercement.map((v: any, i: number) => {
+                const formattedDate = new Date(v.date).toLocaleDateString('fr-FR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                });
+                return (
+                  <div className="flex justify-between items-center" key={i}>
+                    <span className="text-sm font-medium">{formatter.format(v.amount)}</span>
+                    <span className="text-sm text-gray-400">{formattedDate}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Print and Home Buttons */}
+          <div className="flex justify-end w-full mt-6 space-x-4">
+            <PrintPdf 
+              createdAt={facture.createdAt}
+              phone={facture.phone}
+              address={facture.address}
+              totalVercement={facture.totalVercement}
+              name={facture.name}
+              total={facture?.total}
+              factureNumber={facture?.factureNumber}
+              items={facture?.items.map((item: any) => ({
+                product: item.product,
+                price: item.price,
+                couleurExterieur: item.couleurExterieur,
+               couleurInterieur: item.couleurInterieur,
+               typeModeles : item.typeModeles,
+               typeAccessoires: item.typeAccessoires, 
+               hauteurDePleinte: item.hauteurDePleinte,
+              }))} 
+          
+            />
+            
+            <Button asChild variant="link" className="text-blue-500 hover:text-blue-600">
+              <Link href="/admin">
+                Home
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
-        <PrintPdf 
-          createdAt={facture.createdAt}
-          id={facture._id}
-          phone={facture.phone}
-          address={facture.address}
-          totalVercement={facture.totalVercement}
-          name={facture.name}
-          total={facture?.total} 
-          items={facture?.items.map((item: any) => ({
-            product: item.product,
-            price: item.price
-          }))} 
-        />
-        
-        <Button asChild variant="link">
-          <Link href="/admin">
-            Home
-          </Link>
-        </Button>
-      </div>
-    </div>
+
   )
 }
 
