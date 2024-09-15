@@ -10,6 +10,7 @@ const Print = async ({params: {id}}: SearchParamProps) => {
 
     const facture = await getFacture(id) || []
     const rest = facture.total - facture.totalVercement;
+    console.log(facture)
      return (
       <div className="w-full min-h-screen flex items-center justify-center bg-dark-900 text-gray-200">
         <div className="flex flex-col items-center justify-center w-[90%] max-w-4xl p-6 bg-dark-800 rounded-lg shadow-lg">
@@ -70,7 +71,7 @@ const Print = async ({params: {id}}: SearchParamProps) => {
                     )}
                     {item.hauteurDePleinte && (
                       <div className="flex justify-between">
-                        <span>Hauteur de Pleinte:</span>
+                        <span>Dimension:</span>
                         <span>{item.hauteurDePleinte}</span>
                       </div>
                     )}
@@ -132,7 +133,7 @@ const Print = async ({params: {id}}: SearchParamProps) => {
                 couleurExterieur: item.couleurExterieur,
                couleurInterieur: item.couleurInterieur,
                typeModeles : item.typeModeles,
-               typeAccessoires: item.typeAccessoires, 
+               typeAccessoirs: item.typeAccessoirs, 
                hauteurDePleinte: item.hauteurDePleinte,
               }))} 
           

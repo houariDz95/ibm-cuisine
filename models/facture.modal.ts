@@ -12,23 +12,18 @@ const ItemSchema = new mongoose.Schema({
   },
   couleurExterieur: {
     type: String,
-    required: true,
   },
   couleurInterieur: {
     type: String,
-    required: true,
   },
   typeModeles: {
     type: String,
-    required: true,
   },
   typeAccessoirs: {
     type: String,
-    required: true,
   },
   hauteurDePleinte: {
     type: String,
-    required: true,
   },
 });
 

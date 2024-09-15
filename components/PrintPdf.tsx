@@ -50,8 +50,8 @@ const PrintPdf = (
             doc.text(`Date: ${new Date(createdAt).toLocaleDateString('fr-FR')}`, 14, 48);
 
             // 4. Personal Data Below Facture Information
-            doc.text(`Téléphone: 0554705038`, 14, 56);
-            doc.text('Email: example@example.com', 14, 64); // Replace with actual email
+            doc.text(`Téléphone: 0553088954 | 055118344`, 14, 56);
+            doc.text('Email: ibmcuisine@gmail.com', 14, 64); // Replace with actual email
             doc.text(`Adresse: 06 hai el salam oran`, 14, 72);
 
             // 5. Client Information on the Right
@@ -64,16 +64,16 @@ const PrintPdf = (
             doc.line(14, 82, 200, 82); // Draw horizontal line
 
             // 7. Add Table Headers and Data (Take Full Width)
-            const tableColumnHeaders = ['#', 'Produit', 'Prix (DZD)', 'C Exterieur', 'C Interieur', 'T Modèles', 'T Accessoires', 'H de Pleinte'];
+            const tableColumnHeaders = ['#', 'Produit', 'Dimension', 'C Exterieur', 'C Interieur', 'T Modèles', 'T Accessoires', 'Prix (DZD)'];
             const tableRows = items.map((item: any, index: number) => [
                 index + 1, // Row number
                 item.product, // Product name
-                new Intl.NumberFormat('en-DZ', { style: 'currency', currency: 'DZD' }).format(item.price), // Formatted price
+                item.hauteurDePleinte || 'N/A', // Hauteur de Pleinte
                 item.couleurExterieur || 'N/A', // Couleur Exterieur
                 item.couleurInterieur || 'N/A', // Couleur Interieur
                 item.typeModeles || 'N/A', // Type Modèles
-                item.typeAccessoires || 'N/A', // Type Accessoires
-                item.hauteurDePleinte || 'N/A' // Hauteur de Pleinte
+                item.typeAccessoirs || 'N/A', // Type Accessoires
+                new Intl.NumberFormat('en-DZ', { style: 'currency', currency: 'DZD' }).format(item.price), // Formatted price
             ]);
 
             doc.autoTable({
@@ -81,7 +81,17 @@ const PrintPdf = (
                 body: tableRows,
                 startY: 87, // Y position where the table starts
                 theme: 'grid', // Style of the table
-                headStyles: { fillColor: [67, 193, 107] }, 
+                headStyles: { 
+                    fillColor: null, // Transparent background for the header
+                    textColor: [0, 0, 0], // Black text color
+                    lineColor: [0, 0, 0], // Black borders for the grid
+                    lineWidth: 0.5, // Set the line width for the grid
+                },
+                styles: {
+                    lineColor: [0, 0, 0], // Black borders for the entire table grid
+                    lineWidth: 0.5, // Set the line width for the grid
+                    textColor: [0, 0, 0]  // Black text color for the body rows as well
+                }
             });
 
             // 8. Final Y position after the table
@@ -92,10 +102,24 @@ const PrintPdf = (
             doc.text(`Total: ${new Intl.NumberFormat('en-DZ', { style: 'currency', currency: 'DZD' }).format(total)}`, 14, finalY + 20);
             doc.text(`Versement: ${new Intl.NumberFormat('en-DZ', { style: 'currency', currency: 'DZD' }).format(totalVercement)}`, 14, finalY + 30);
 
+            doc.setFontSize(16);
+            doc.text('Pluse de details:', 14, finalY + 50);
+            
+            // Draw a larger square (rectangular) to take almost the width of the paper
+            const squareX = 14; // X position of the square
+            const squareY = finalY + 60; // Y position of the square (below the text)
+            const squareWidth = doc.internal.pageSize.width - 28; // Almost the full width of the paper (with some margins)
+            const squareHeight = 100; // Adjust height as needed
+            
+            doc.rect(squareX, squareY, squareWidth, squareHeight); // Draw a large square (x, y, width, height)
+            
+            
+
+
             // 10. Footer Message at the Bottom of the Page
             const pageHeight = doc.internal.pageSize.height;
             doc.setFontSize(12);
-            doc.text('Merci pour votre confiance !', 14, pageHeight - 30);
+            doc.text('Merci pour votre confiance !', 14, pageHeight - 26);
             doc.text('N\'hésitez pas à nous contacter pour toute question.', 14, pageHeight - 22);
 
             // 11. Save the PDF
