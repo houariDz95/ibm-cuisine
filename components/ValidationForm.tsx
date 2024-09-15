@@ -154,9 +154,9 @@ const ValidationForm = ({ addItem }: { addItem: (item: ItemType) => void }) => {
             name="hauteurDePleinte"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Hauteur de Pleinte</FormLabel>
+                <FormLabel>Dimension</FormLabel>
                 <FormControl>
-                  <Input placeholder="Hauteur de Pleinte" {...field} />
+                  <Input placeholder="Dimension" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
