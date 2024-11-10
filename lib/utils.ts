@@ -14,8 +14,7 @@ export function decryptKey(passkey: string) {
 }
 
 export const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'DZD',
-  minimumFractionDigits: 0, // Set the minimumFractionDigits to 0
-  maximumFractionDigits: 2, // Keep the maximumFractionDigits to 2 for other cases
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+  useGrouping: true, // Adds comma separators (e.g., 80,000)
 });

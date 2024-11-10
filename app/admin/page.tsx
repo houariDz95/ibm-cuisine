@@ -28,7 +28,7 @@ const AdminPage = async () => {
         price: item.price,  // Assuming these are plain values
       })),
     };
-  });
+  }) || [];
   
   return (
     <div className="mx-auto max-w-7xl flex-col space-y-14 mb-10">

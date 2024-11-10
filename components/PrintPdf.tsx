@@ -120,7 +120,7 @@ const PrintPdf = (
             const pageHeight = doc.internal.pageSize.height;
             doc.setFontSize(12);
             doc.text('Merci pour votre confiance !', 14, pageHeight - 26);
-            doc.text('N\'hésitez pas à nous contacter pour toute question.', 14, pageHeight - 22);
+            doc.text('N\'hésitez pas à nous contacter pour toute question.', 14, pageHeight - 18);
 
             // 11. Save the PDF
             doc.save(`facture-${name}.pdf`);
